@@ -1,6 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Search, AlertCircle, CheckCircle } from 'lucide-react';
+import { Search, AlertCircle, CheckCircle, MapPin, Navigation } from 'lucide-react';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
+// Fix leafet default icon issue in React
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png'
+});
+
+// Custom Police Icon
+const policeIcon = new L.Icon({
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/2933/2933221.png',
+    iconSize: [38, 38],
+    iconAnchor: [19, 38],
+    popupAnchor: [0, -38]
+});
+
+// Helper component to center map
+function ChangeView({ center }) {
+  const map = useMap();
+  map.setView(center, map.getZoom());
+  return null;
+}
 
 const TrackComplaint = () => {
     const [trackingId, setTrackingId] = useState('');
@@ -8,6 +34,11 @@ const TrackComplaint = () => {
     const [history, setHistory] = useState([]);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+
+    // Map States
+    const [incidentLocation, setIncidentLocation] = useState([28.6139, 77.2090]);
+    const [policeLocation, setPoliceLocation] = useState([28.6200, 77.2200]);
+    const [eta, setEta] = useState(15);
 
     const handleSearch = async (e) => {
         e.preventDefault();
@@ -21,12 +52,57 @@ const TrackComplaint = () => {
             const res = await axios.get(`/api/complaints/track/${trackingId}`);
             setComplaint(res.data.complaint);
             setHistory(res.data.history);
+            
+            // Generate deterministic mock coordinates based on string to prevent jumping around
+            const hash = trackingId.split('').reduce((a, b) => { a = ((a << 5) - a) + b.charCodeAt(0); return a & a }, 0);
+            const latOff = (hash % 100) / 10000;
+            const lngOff = ((hash >> 2) % 100) / 10000;
+            
+            const baseLat = 28.6139 + latOff;
+            const baseLng = 77.2090 + lngOff;
+            
+            setIncidentLocation([baseLat, baseLng]);
+            
+            // Start police slightly far away
+            setPoliceLocation([baseLat + 0.02, baseLng + 0.02]);
+            setEta(Math.floor(Math.random() * 10) + 5);
+
         } catch (err) {
             setError(err.response?.data?.message || 'Complaint not found');
         } finally {
             setLoading(false);
         }
     };
+
+    // Simulate Police Movement
+    useEffect(() => {
+        if (!complaint) return;
+        
+        // Only move if assigned or investigating
+        if (complaint.status !== 'Assigned' && complaint.status !== 'Under Investigation') return;
+
+        const interval = setInterval(() => {
+            setPoliceLocation(prev => {
+                const latDiff = incidentLocation[0] - prev[0];
+                const lngDiff = incidentLocation[1] - prev[1];
+                
+                // If very close, stop moving
+                if (Math.abs(latDiff) < 0.0005 && Math.abs(lngDiff) < 0.0005) {
+                    setEta(0);
+                    return prev;
+                }
+
+                setEta(prevEta => Math.max(1, prevEta - 1));
+
+                return [
+                    prev[0] + latDiff * 0.1, // Move 10% closer each tick
+                    prev[1] + lngDiff * 0.1
+                ];
+            });
+        }, 3000); // Update every 3 seconds
+
+        return () => clearInterval(interval);
+    }, [complaint, incidentLocation]);
 
     const getStatusColor = (status) => {
         switch(status) {
@@ -105,6 +181,43 @@ const TrackComplaint = () => {
                                 )}
                                 <p><strong className="text-gray-700">Last Updated:</strong> {new Date(complaint.updatedAt).toLocaleString()}</p>
                             </div>
+                        </div>
+                    </div>
+
+                    {/* LIVE TRACKING MAP UI */}
+                    <div className="p-6 border-t border-gray-200 bg-gray-50">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-md font-bold text-gray-900 flex items-center">
+                                <Navigation className="mr-2 text-primary-600" size={20}/>
+                                Live Geographical Tracking
+                            </h3>
+                            {(complaint.status === 'Assigned' || complaint.status === 'Under Investigation') && (
+                                <div className="text-sm font-semibold text-red-600 animate-pulse bg-red-100 px-3 py-1 rounded-full">
+                                    {eta > 0 ? `Police ETA: ~${eta} mins` : 'Police on scene'}
+                                </div>
+                            )}
+                        </div>
+                        <div className="h-64 w-full rounded-xl overflow-hidden shadow-inner border border-gray-300">
+                            <MapContainer center={incidentLocation} zoom={13} scrollWheelZoom={false} style={{ height: '100%', width: '100%' }}>
+                                <ChangeView center={incidentLocation} />
+                                <TileLayer
+                                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                />
+                                <Marker position={incidentLocation}>
+                                    <Popup>
+                                        <strong>Incident Location</strong><br/>{complaint.location}
+                                    </Popup>
+                                </Marker>
+                                
+                                {(complaint.status === 'Assigned' || complaint.status === 'Under Investigation' || complaint.status === 'Resolved') && (
+                                    <Marker position={policeLocation} icon={policeIcon}>
+                                        <Popup>
+                                            <strong>Assigned Unit</strong><br/>{complaint.assignedOfficer?.name || 'Police Patrol'}
+                                        </Popup>
+                                    </Marker>
+                                )}
+                            </MapContainer>
                         </div>
                     </div>
 
