@@ -26,6 +26,68 @@ const ReportCrime = () => {
     const [evidence, setEvidence] = useState([]);
     const [generatingSketch, setGeneratingSketch] = useState(false);
 
+    // AI CyberCop States
+    const [aiChatOpen, setAiChatOpen] = useState(false);
+    const [aiInputText, setAiInputText] = useState('');
+    const [aiProcessing, setAiProcessing] = useState(false);
+    const [aiLogs, setAiLogs] = useState([]);
+
+    const handleAIAssist = async () => {
+        if (!aiInputText.trim()) return;
+        setAiProcessing(true);
+        setAiLogs(['> Initializing NLP Core...', '> Analyzing linguistic semantics...']);
+        
+        await new Promise(r => setTimeout(r, 800));
+        setAiLogs(prev => [...prev, '> Extracting entities (Time, Location, Crime)...']);
+        
+        await new Promise(r => setTimeout(r, 1000));
+        setAiLogs(prev => [...prev, '> Cross-referencing penal codes...']);
+
+        await new Promise(r => setTimeout(r, 800));
+        
+        const lowerText = aiInputText.toLowerCase();
+        
+        // Mock NLP Extraction Logic
+        let detectedType = 'Other';
+        if (lowerText.includes('hack') || lowerText.includes('password') || lowerText.includes('email') || lowerText.includes('scam')) detectedType = 'Cybercrime';
+        if (lowerText.includes('stole') || lowerText.includes('robbed') || lowerText.includes('wallet') || lowerText.includes('thief')) detectedType = 'Theft';
+        if (lowerText.includes('hit') || lowerText.includes('attack') || lowerText.includes('fight')) detectedType = 'Assault';
+
+        let detectedPriority = 'Medium';
+        if (lowerText.includes('gun') || lowerText.includes('knife') || lowerText.includes('blood') || lowerText.includes('urgent')) detectedPriority = 'High';
+        if (lowerText.includes('scam')) detectedPriority = 'Low';
+
+        const today = new Date().toISOString().split('T')[0];
+        
+        // Extract a mock suspect physical description if available
+        let extractedSuspect = '';
+        if (lowerText.includes('tall') || lowerText.includes('short') || lowerText.includes('wearing') || lowerText.includes('beard')) {
+            extractedSuspect = 'Auto-extracted: ' + aiInputText.substring(0, 50) + '...';
+        }
+
+        setFormData(prev => ({
+            ...prev,
+            crimeType: detectedType,
+            incidentDate: today,
+            incidentTime: '12:00',
+            description: `[AI AUTO-TRANSCRIBED]\n${aiInputText}`,
+            priority: detectedPriority,
+            city: 'New Delhi',
+            location: 'Auto-extracted from context'
+        }));
+
+        if (extractedSuspect) {
+            setSuspectInfo(prev => ({ ...prev, description: extractedSuspect }));
+        }
+
+        setAiLogs(prev => [...prev, '> Form auto-populated successfully!']);
+        
+        await new Promise(r => setTimeout(r, 1000));
+        setAiProcessing(false);
+        setAiChatOpen(false);
+        setStep(3); // Jump to Details step to show off the populated form
+    };
+
     const handleGenerateSketch = (e) => {
         e.preventDefault();
         if (!suspectInfo.description) {
@@ -334,6 +396,70 @@ const ReportCrime = () => {
                     </div>
                 </form>
             </div>
+
+            {/* Floating AI Assistant Button */}
+            {!aiChatOpen && (
+                <button 
+                    onClick={() => setAiChatOpen(true)}
+                    className="fixed bottom-8 right-8 z-50 bg-primary-500 text-black p-4 rounded-full shadow-[0_0_20px_rgba(0,255,204,0.6)] hover:scale-110 transition-transform flex items-center justify-center group"
+                >
+                    <Zap size={24} className="group-hover:animate-pulse" />
+                </button>
+            )}
+
+            {/* AI Assistant Modal */}
+            {aiChatOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+                    <div className="bg-zinc-900 border border-primary-500/50 rounded-2xl w-full max-w-lg shadow-[0_0_40px_rgba(0,255,204,0.15)] flex flex-col overflow-hidden">
+                        <div className="bg-black/80 border-b border-zinc-800 p-4 flex justify-between items-center">
+                            <div className="flex items-center">
+                                <Zap className="text-primary-500 mr-2" size={20} />
+                                <h3 className="text-white font-mono font-bold uppercase tracking-widest">CyberCop AI Assist</h3>
+                            </div>
+                            <button onClick={() => setAiChatOpen(false)} className="text-zinc-500 hover:text-white transition-colors">
+                                ✕
+                            </button>
+                        </div>
+                        
+                        <div className="p-6 flex-grow flex flex-col">
+                            {!aiProcessing ? (
+                                <>
+                                    <p className="text-zinc-300 text-sm mb-4 leading-relaxed">
+                                        Hello. I am CyberCop, your AI reporting assistant. 
+                                        Don't worry about filling out complicated forms. Just describe what happened in your own words, and I will automatically extract the details and fill out the report for you.
+                                    </p>
+                                    <textarea 
+                                        rows="5"
+                                        value={aiInputText}
+                                        onChange={(e) => setAiInputText(e.target.value)}
+                                        placeholder="e.g., Yesterday around 3 PM, my Facebook was hacked by someone claiming to be a tech support agent. He scammed me out of $500. He sounded like a tall man with a deep voice..."
+                                        className="w-full bg-black border border-zinc-700 rounded-lg p-3 text-white text-sm font-mono focus:border-primary-500 outline-none resize-none mb-4"
+                                    ></textarea>
+                                    <button 
+                                        onClick={handleAIAssist}
+                                        disabled={!aiInputText.trim()}
+                                        className="w-full bg-primary-600 text-black font-bold uppercase tracking-widest py-3 rounded-lg hover:bg-primary-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        Extract & Auto-Fill
+                                    </button>
+                                </>
+                            ) : (
+                                <div className="py-8 font-mono text-xs flex flex-col h-full bg-black rounded-lg p-4 border border-zinc-800">
+                                    <div className="text-primary-500 mb-2 border-b border-zinc-800 pb-2 flex items-center">
+                                        <span className="animate-spin h-3 w-3 border-2 border-primary-500 border-t-transparent rounded-full mr-2"></span>
+                                        PROCESSING_NLP_STREAM
+                                    </div>
+                                    <div className="space-y-2 flex-grow overflow-y-auto mt-2 text-zinc-400">
+                                        {aiLogs.map((log, i) => (
+                                            <div key={i} className="animate-fadeIn">{log}</div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

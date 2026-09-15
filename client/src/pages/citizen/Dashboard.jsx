@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import { FileText, Clock, CheckCircle, Activity, ArrowRight, ShieldAlert, Cpu } from 'lucide-react';
+import DarkWebScanner from '../../components/DarkWebScanner';
 
 const CitizenDashboard = () => {
     const { user } = useContext(AuthContext);
@@ -68,6 +69,11 @@ const CitizenDashboard = () => {
                         <ShieldAlert size={18} className="mr-2" /> NEW INCIDENT
                     </Link>
                 </div>
+            </div>
+
+            {/* Dark Web Scanner Integration */}
+            <div className="relative z-10">
+                <DarkWebScanner />
             </div>
 
             {/* Premium Stat Cards - Bento Grid */}
