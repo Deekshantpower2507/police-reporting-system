@@ -56,6 +56,10 @@ const Navbar = () => {
                                     Dash
                                 </Link>
                                 
+                                <Link to="/safety-map" className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${isActive('/safety-map') ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800/50'}`}>
+                                    Safety Map
+                                </Link>
+
                                 {user.role === 'citizen' && (
                                     <>
                                         <Link to="/citizen/report" className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${isActive('/citizen/report') ? 'bg-primary-500/20 text-primary-500 border border-primary-500/30' : 'text-zinc-400 hover:text-white hover:bg-zinc-800/50'}`}>
@@ -81,6 +85,9 @@ const Navbar = () => {
                             <>
                                 <Link to="/bulletins" className="px-5 py-2 rounded-full text-sm font-semibold text-zinc-300 hover:text-white hover:bg-zinc-800 transition-all flex items-center group">
                                     <AlertCircle size={16} className="mr-2 text-primary-500 group-hover:animate-pulse" /> Bulletins
+                                </Link>
+                                <Link to="/safety-map" className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${isActive('/safety-map') ? 'bg-zinc-800 text-white' : 'text-zinc-300 hover:text-white hover:bg-zinc-800'}`}>
+                                    Safety Map
                                 </Link>
                                 <Link to="/login" className="px-5 py-2 rounded-full text-sm font-semibold text-zinc-300 hover:text-white hover:bg-zinc-800 transition-all">
                                     Login
@@ -109,6 +116,7 @@ const Navbar = () => {
                         {user ? (
                             <div className="flex flex-col space-y-2">
                                 <Link to={getDashboardLink()} onClick={() => setIsMenuOpen(false)} className="px-4 py-2 text-zinc-300 hover:bg-zinc-800 rounded-lg">Dash</Link>
+                                <Link to="/safety-map" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 text-zinc-300 hover:bg-zinc-800 rounded-lg">Safety Map</Link>
                                 {user.role === 'citizen' && (
                                     <>
                                         <Link to="/citizen/report" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 text-primary-500 font-semibold bg-primary-500/10 rounded-lg">Report Incident</Link>
@@ -119,6 +127,8 @@ const Navbar = () => {
                             </div>
                         ) : (
                             <div className="flex flex-col space-y-2">
+                                <Link to="/bulletins" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 text-zinc-300 hover:bg-zinc-800 rounded-lg">Bulletins</Link>
+                                <Link to="/safety-map" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 text-zinc-300 hover:bg-zinc-800 rounded-lg">Safety Map</Link>
                                 <Link to="/login" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 text-zinc-300 hover:bg-zinc-800 rounded-lg">Login</Link>
                                 <Link to="/register" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 text-black font-bold bg-primary-500 rounded-lg text-center">Sign Up</Link>
                             </div>

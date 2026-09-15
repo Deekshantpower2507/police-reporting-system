@@ -18,6 +18,7 @@ import PoliceInvestigation from './pages/police/Investigation';
 
 // New Pages
 import Bulletins from './pages/shared/Bulletins';
+import SafetyMap from './pages/shared/SafetyMap';
 import ManageBulletins from './pages/admin/ManageBulletins';
 
 import AdminDashboard from './pages/admin/Dashboard';
@@ -40,6 +41,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/bulletins" element={<Bulletins />} />
+              <Route path="/safety-map" element={<SafetyMap />} />
               <Route path="/track" element={<TrackComplaint />} />
 
               {/* Citizen Routes */}

@@ -67,6 +67,26 @@ const assignOfficer = async (req, res) => {
             message: `Officer ${officer.name} has been assigned to your complaint ${complaint.complaintId}.`
         });
 
+        // Send Email Notification to Citizen
+        const citizen = await User.findByPk(complaint.citizenId);
+        if (citizen) {
+            const { sendEmail } = require('../utils/emailService');
+            const emailText = `Dear ${citizen.name},\n\nAn officer has been assigned to your case.\n\nTracking ID: ${complaint.complaintId}\nAssigned Officer: ${officer.name}\nStation: ${officer.policeStation}\n\nYou can track the officer's live dispatch location on the citizen portal.\n\nRegards,\nPolice Reporting System`;
+            
+            const emailHtml = `
+                <h2>Police Officer Dispatched</h2>
+                <p>Dear ${citizen.name},</p>
+                <p>An officer has been officially assigned to your incident report (<strong>${complaint.complaintId}</strong>).</p>
+                <ul>
+                    <li><strong>Assigned Officer:</strong> ${officer.name}</li>
+                    <li><strong>Police Station:</strong> ${officer.policeStation}</li>
+                </ul>
+                <p>You can check the live tracking map and status timeline on the citizen portal.</p>
+                <br/><p>Regards,<br/><strong>Police Reporting System Command Center</strong></p>
+            `;
+            await sendEmail(citizen.email, `Officer Assigned: ${complaint.complaintId}`, emailText, emailHtml);
+        }
+
         res.json({ message: 'Officer assigned successfully', complaint: {...complaint.toJSON(), _id: complaint.id} });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });

@@ -140,6 +140,14 @@ const ComplaintDetails = () => {
                                     <li><span className="text-gray-500">Name:</span> <span className="text-black font-semibold">{complaint.suspectInformation.name || 'Unknown'}</span></li>
                                     <li><span className="text-gray-500">Description:</span> <span className="text-black font-semibold">{complaint.suspectInformation.description || 'N/A'}</span></li>
                                     <li><span className="text-gray-500">Contact:</span> <span className="text-black font-semibold">{complaint.suspectInformation.contactInformation || 'N/A'}</span></li>
+                                    {complaint.suspectInformation.aiSketchUrl && (
+                                        <li className="pt-4">
+                                            <span className="text-gray-500 block mb-2 font-bold uppercase text-xs">AI Generated Sketch:</span>
+                                            <div className="border border-gray-300 rounded overflow-hidden max-w-[250px]">
+                                                <img src={complaint.suspectInformation.aiSketchUrl} alt="AI Suspect Sketch" className="w-full h-auto" />
+                                            </div>
+                                        </li>
+                                    )}
                                 </ul>
                             ) : (
                                 <p className="text-gray-500 text-sm italic">No suspect information provided.</p>

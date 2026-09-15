@@ -22,8 +22,33 @@ const ReportCrime = () => {
     });
 
     const [victimInfo, setVictimInfo] = useState({ name: '', phone: '', email: '', address: '' });
-    const [suspectInfo, setSuspectInfo] = useState({ name: '', description: '', contactInformation: '', relationship: '' });
+    const [suspectInfo, setSuspectInfo] = useState({ name: '', description: '', contactInformation: '', relationship: '', aiSketchUrl: '' });
     const [evidence, setEvidence] = useState([]);
+    const [generatingSketch, setGeneratingSketch] = useState(false);
+
+    const handleGenerateSketch = (e) => {
+        e.preventDefault();
+        if (!suspectInfo.description) {
+            alert("Please provide a physical description first!");
+            return;
+        }
+        setGeneratingSketch(true);
+        // Using Pollinations AI for free, no-key image generation based on prompt
+        const prompt = encodeURIComponent(`police composite sketch of a suspect, ${suspectInfo.description}, black and white pencil drawing, highly detailed, realistic`);
+        const url = `https://image.pollinations.ai/prompt/${prompt}?width=512&height=512&nologo=true`;
+        
+        // Pre-load the image
+        const img = new Image();
+        img.onload = () => {
+            setSuspectInfo({ ...suspectInfo, aiSketchUrl: url });
+            setGeneratingSketch(false);
+        };
+        img.onerror = () => {
+            alert("Failed to generate sketch. Try again.");
+            setGeneratingSketch(false);
+        };
+        img.src = url;
+    };
 
     const handleInputChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
     const handleVictimChange = (e) => setVictimInfo({ ...victimInfo, [e.target.name]: e.target.value });
@@ -224,6 +249,21 @@ const ReportCrime = () => {
                                         <input type="text" name="name" placeholder="NAME / ALIAS" value={suspectInfo.name} onChange={handleSuspectChange} className={inputClasses} />
                                         <input type="text" name="description" placeholder="PHYSICAL_DESCRIPTION" value={suspectInfo.description} onChange={handleSuspectChange} className={inputClasses} />
                                         <input type="text" name="contactInformation" placeholder="CONTACT (PHONE/EMAIL/SOCIAL)" value={suspectInfo.contactInformation || ''} onChange={handleSuspectChange} className={inputClasses} />
+                                        
+                                        <button 
+                                            onClick={handleGenerateSketch} 
+                                            disabled={generatingSketch}
+                                            className="w-full mt-2 py-2 px-4 bg-primary-600 hover:bg-primary-500 text-white text-xs font-bold uppercase tracking-wider rounded-lg transition-colors flex items-center justify-center disabled:opacity-50"
+                                        >
+                                            {generatingSketch ? 'Generating AI Sketch...' : 'Generate AI Suspect Sketch'}
+                                        </button>
+                                        
+                                        {suspectInfo.aiSketchUrl && (
+                                            <div className="mt-4 border border-zinc-700 rounded-lg overflow-hidden relative">
+                                                <div className="absolute top-0 left-0 bg-black/60 text-white text-xs px-2 py-1 font-mono w-full">AI GENERATED COMPOSITE SKETCH</div>
+                                                <img src={suspectInfo.aiSketchUrl} alt="AI Suspect Sketch" className="w-full h-auto" />
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>

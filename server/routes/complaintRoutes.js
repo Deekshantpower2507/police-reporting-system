@@ -6,10 +6,14 @@ const {
     getComplaintById, 
     getComplaintByTrackingId, 
     updateComplaintStatus,
-    getPoliceAssignedComplaints
+    getPoliceAssignedComplaints,
+    getPublicHeatmapData
 } = require('../controllers/complaintController');
 const { protect, authorize } = require('../middleware/auth');
 const upload = require('../middleware/upload');
+
+// Public Routes
+router.get('/public/heatmap', getPublicHeatmapData);
 
 // Citizen Routes
 router.post('/', protect, authorize('citizen'), upload.array('evidence', 5), createComplaint);
