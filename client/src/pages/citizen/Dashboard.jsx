@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
-import { FileText, Clock, CheckCircle, Activity, ArrowRight, ShieldAlert, Cpu } from 'lucide-react';
+import { FileText, Clock, CheckCircle, Activity, ArrowRight, ShieldAlert, Cpu, TriangleAlert } from 'lucide-react';
 import DarkWebScanner from '../../components/DarkWebScanner';
 import SmsSimulator from '../../components/SmsSimulator';
 
@@ -10,6 +10,42 @@ const CitizenDashboard = () => {
     const { user } = useContext(AuthContext);
     const [complaints, setComplaints] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [sosLoading, setSosLoading] = useState(false);
+
+    const handleSOS = async () => {
+        if(!window.confirm("CRITICAL WARNING: This will immediately dispatch emergency services to your GPS location. Are you sure?")) return;
+        
+        setSosLoading(true);
+        
+        // Mock geolocation for presentation
+        const mockLat = 26.2183 + (Math.random() - 0.5) * 0.05;
+        const mockLng = 78.1828 + (Math.random() - 0.5) * 0.05;
+        
+        const data = new FormData();
+        data.append('crimeType', 'Emergency SOS');
+        data.append('incidentDate', new Date().toISOString().split('T')[0]);
+        data.append('incidentTime', new Date().toTimeString().split(' ')[0].substring(0, 5));
+        data.append('location', `GPS: ${mockLat.toFixed(4)}, ${mockLng.toFixed(4)}`);
+        data.append('city', 'Gwalior');
+        data.append('state', 'Madhya Pradesh');
+        data.append('policeStation', 'Gwalior HQ');
+        data.append('priority', 'Critical');
+        data.append('description', 'USER TRIGGERED AUTOMATED SOS PANIC BUTTON. IMMEDIATE DISPATCH REQUIRED.');
+        
+        data.append('victimInformation', JSON.stringify({}));
+        data.append('suspectInformation', JSON.stringify({}));
+
+        try {
+            await axios.post('/api/complaints', data);
+            alert("SOS DISPATCHED! POLICE ARE ON ROUTE TO YOUR LOCATION.");
+            window.location.reload();
+        } catch (error) {
+            console.error(error);
+            alert("FAILED TO DISPATCH SOS. PLEASE CALL 100.");
+        } finally {
+            setSosLoading(false);
+        }
+    };
 
     useEffect(() => {
         const fetchComplaints = async () => {
@@ -54,6 +90,14 @@ const CitizenDashboard = () => {
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative min-h-screen">
+            {sosLoading && (
+                <div className="fixed inset-0 z-[200] bg-red-900/90 flex flex-col items-center justify-center backdrop-blur-sm animate-pulse">
+                    <ShieldAlert size={100} className="text-white mb-6 animate-bounce" />
+                    <h2 className="text-5xl font-black text-white tracking-widest">DISPATCHING SOS</h2>
+                    <p className="text-xl text-red-200 mt-4 font-mono">Transmitting GPS Coordinates...</p>
+                </div>
+            )}
+
             {/* Background elements */}
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-900/20 rounded-full mix-blend-screen filter blur-[100px] pointer-events-none"></div>
 
@@ -65,7 +109,10 @@ const CitizenDashboard = () => {
                     <h1 className="text-4xl font-black text-white mb-2 uppercase tracking-tight">OPERATOR: <span className="text-primary-500">{user?.name}</span></h1>
                     <p className="text-zinc-400 font-medium">Command center initialized. Overview of your active reports.</p>
                 </div>
-                <div className="mt-6 md:mt-0 space-x-3">
+                <div className="mt-6 md:mt-0 space-x-3 flex items-center">
+                    <button onClick={handleSOS} className="inline-flex items-center px-6 py-3 bg-red-600 text-white font-black uppercase tracking-widest rounded-xl shadow-[0_0_20px_rgba(220,38,38,0.5)] hover:shadow-[0_0_30px_rgba(220,38,38,0.8)] transition-all animate-pulse hover:animate-none">
+                        <TriangleAlert size={18} className="mr-2" /> SOS PANIC
+                    </button>
                     <Link to="/citizen/report" className="inline-flex items-center px-6 py-3 bg-primary-500 text-black font-black uppercase tracking-widest rounded-xl shadow-[0_0_20px_rgba(0,255,204,0.3)] hover:shadow-[0_0_30px_rgba(0,255,204,0.5)] transition-all">
                         <ShieldAlert size={18} className="mr-2" /> NEW INCIDENT
                     </Link>
