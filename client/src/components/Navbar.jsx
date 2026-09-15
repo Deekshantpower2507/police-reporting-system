@@ -43,7 +43,7 @@ const Navbar = () => {
                                 <Shield className="h-5 w-5 text-black" />
                             </div>
                             <span className="font-bold text-xl tracking-tighter text-white">
-                                SECURE<span className="text-primary-500">.BLOCK</span>
+                                N.C.R.<span className="text-primary-500">S.</span>
                             </span>
                         </Link>
                     </div>

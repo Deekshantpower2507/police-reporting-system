@@ -11,8 +11,8 @@ const Footer = () => {
                             <div className="p-2 bg-primary-500 rounded-full mr-3">
                                 <Shield className="h-5 w-5 text-black" />
                             </div>
-                            <span className="font-bold text-2xl text-white tracking-tighter">
-                                SECURE<span className="text-primary-500">.BLOCK</span>
+                            <span className="font-bold text-xl tracking-tighter text-white">
+                                N.C.R.<span className="text-primary-500">S.</span>
                             </span>
                         </div>
                         <p className="text-zinc-500 max-w-sm text-sm">
