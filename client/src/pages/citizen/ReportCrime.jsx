@@ -72,7 +72,7 @@ const ReportCrime = () => {
             incidentTime: '12:00',
             description: `[AI AUTO-TRANSCRIBED]\n${aiInputText}`,
             priority: detectedPriority,
-            city: 'New Delhi',
+            city: 'Gwalior',
             location: 'Auto-extracted from context'
         }));
 

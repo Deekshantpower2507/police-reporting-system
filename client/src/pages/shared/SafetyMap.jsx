@@ -30,10 +30,10 @@ const SafetyMap = () => {
                     const hash = incident.complaintId.split('').reduce((a, b) => { a = ((a << 5) - a) + b.charCodeAt(0); return a & a }, 0);
                     const latOff = (hash % 100) / 2000;
                     const lngOff = ((hash >> 2) % 100) / 2000;
-                    // Base Delhi coordinates
+                    // Base Gwalior coordinates
                     return {
                         ...incident,
-                        position: [28.6139 + latOff, 77.2090 + lngOff]
+                        position: [26.2183 + latOff, 78.1828 + lngOff]
                     };
                 });
                 setIncidents(enhanced);
@@ -76,7 +76,7 @@ const SafetyMap = () => {
                     ) : (
                         <>
                             <MapContainer 
-                                center={[28.6139, 77.2090]} 
+                                center={[26.2183, 78.1828]} 
                                 zoom={12} 
                                 style={{ height: '100%', width: '100%' }}
                                 className="z-0"

@@ -36,8 +36,8 @@ const TrackComplaint = () => {
     const [loading, setLoading] = useState(false);
 
     // Map States
-    const [incidentLocation, setIncidentLocation] = useState([28.6139, 77.2090]);
-    const [policeLocation, setPoliceLocation] = useState([28.6200, 77.2200]);
+    const [incidentLocation, setIncidentLocation] = useState([26.2183, 78.1828]);
+    const [policeLocation, setPoliceLocation] = useState([26.2200, 78.1900]);
     const [eta, setEta] = useState(15);
 
     const handleSearch = async (e) => {
@@ -58,8 +58,8 @@ const TrackComplaint = () => {
             const latOff = (hash % 100) / 10000;
             const lngOff = ((hash >> 2) % 100) / 10000;
             
-            const baseLat = 28.6139 + latOff;
-            const baseLng = 77.2090 + lngOff;
+            const baseLat = 26.2183 + latOff;
+            const baseLng = 78.1828 + lngOff;
             
             setIncidentLocation([baseLat, baseLng]);
             
