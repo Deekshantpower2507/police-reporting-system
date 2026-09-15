@@ -4,6 +4,7 @@ import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import { FileText, Clock, CheckCircle, Activity, ArrowRight, ShieldAlert, Cpu } from 'lucide-react';
 import DarkWebScanner from '../../components/DarkWebScanner';
+import SmsSimulator from '../../components/SmsSimulator';
 
 const CitizenDashboard = () => {
     const { user } = useContext(AuthContext);
@@ -71,9 +72,14 @@ const CitizenDashboard = () => {
                 </div>
             </div>
 
-            {/* Dark Web Scanner Integration */}
-            <div className="relative z-10">
-                <DarkWebScanner />
+            {/* Widgets Section */}
+            <div className="relative z-10 flex flex-col lg:flex-row gap-6 mb-10">
+                <div className="flex-grow">
+                    <DarkWebScanner />
+                </div>
+                <div className="w-full lg:w-80 flex-shrink-0">
+                    <SmsSimulator complaints={complaints} />
+                </div>
             </div>
 
             {/* Premium Stat Cards - Bento Grid */}
@@ -140,7 +146,7 @@ const CitizenDashboard = () => {
                                 </tr>
                             ) : (
                                 complaints.slice(0, 5).map(c => (
-                                    <tr key={c._id} className="hover:bg-zinc-800/50 transition-colors group">
+                                    <tr key={c.id} className="hover:bg-zinc-800/50 transition-colors group">
                                         <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-white">{c.complaintId}</td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-zinc-300">{c.crimeType}</td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-500 font-mono">{new Date(c.createdAt).toLocaleDateString()}</td>
@@ -150,7 +156,7 @@ const CitizenDashboard = () => {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <Link to={`/complaint/${c._id}`} className="text-primary-500 hover:text-primary-400 font-mono text-xs border border-primary-500/30 px-3 py-1 rounded bg-primary-500/10 transition-colors inline-block opacity-0 group-hover:opacity-100">
+                                            <Link to={`/complaint/${c.id}`} className="text-primary-500 hover:text-primary-400 font-mono text-xs border border-primary-500/30 px-3 py-1 rounded bg-primary-500/10 transition-colors inline-block opacity-0 group-hover:opacity-100">
                                                 INSPECT
                                             </Link>
                                         </td>
