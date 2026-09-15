@@ -260,22 +260,16 @@ const ReportCrime = () => {
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div>
-                                        <label className="block text-xs font-mono text-zinc-500 uppercase tracking-widest mb-2">Police Station (Optional for testing)</label>
+                                    <div className="md:col-span-2">
+                                        <label className="block text-xs font-mono text-zinc-500 uppercase tracking-widest mb-2">Nearest Police Station</label>
                                         <select name="policeStation" value={formData.policeStation} onChange={handleInputChange} className={inputClasses}>
                                             <option value="">-- SELECT NEAREST STATION --</option>
-                                            <option value="Central Police Station">Central Police Station</option>
-                                            <option value="North District Station">North District Station</option>
-                                            <option value="South Sector Patrol">South Sector Patrol</option>
-                                            <option value="East Side Division">East Side Division</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label className="block text-xs font-mono text-zinc-500 uppercase tracking-widest mb-2">Assigned Officer (Optional)</label>
-                                        <select name="assignedOfficer" value={formData.assignedOfficer} onChange={handleInputChange} className={inputClasses}>
-                                            <option value="">-- SELECT OFFICER --</option>
-                                            <option value="2">Officer Smith (ID: 2)</option>
-                                            <option value="4">Officer Johnson (ID: 4)</option>
+                                            <option value="Gwalior HQ">Gwalior HQ</option>
+                                            <option value="Maharajpura Station">Maharajpura Station</option>
+                                            <option value="Hazira Station">Hazira Station</option>
+                                            <option value="University Station">University Station</option>
+                                            <option value="Lashkar Station">Lashkar Station</option>
+                                            <option value="Behat Station">Behat Station</option>
                                         </select>
                                     </div>
                                 </div>
