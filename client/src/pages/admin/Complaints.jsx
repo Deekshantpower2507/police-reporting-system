@@ -37,7 +37,7 @@ const AdminComplaints = () => {
 
     const handleAssignClick = (complaint) => {
         setSelectedComplaint(complaint);
-        setSelectedOfficer(complaint.assignedOfficer?._id || '');
+        setSelectedOfficer(complaint.assignedOfficer?.id || '');
         setShowModal(true);
     };
 
@@ -47,7 +47,7 @@ const AdminComplaints = () => {
         
         setAssigning(true);
         try {
-            await axios.put(`/api/admin/complaints/${selectedComplaint._id}/assign`, {
+            await axios.put(`/api/admin/complaints/${selectedComplaint.id}/assign`, {
                 officerId: selectedOfficer
             });
             setShowModal(false);
@@ -131,7 +131,7 @@ const AdminComplaints = () => {
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                             {filteredComplaints.map(c => (
-                                <tr key={c._id} className="hover:bg-gray-50 transition">
+                                <tr key={c.id} className="hover:bg-gray-50 transition">
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{c.complaintId}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{c.citizenId?.name}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{c.crimeType}</td>
@@ -145,7 +145,7 @@ const AdminComplaints = () => {
                                         {c.assignedOfficer ? c.assignedOfficer.name : <span className="text-red-500 italic">Unassigned</span>}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-3">
-                                        <Link to={`/complaint/${c._id}`} className="text-primary-600 hover:text-primary-900">View</Link>
+                                        <Link to={`/complaint/${c.id}`} className="text-primary-600 hover:text-primary-900">View</Link>
                                         <button onClick={() => handleAssignClick(c)} className="text-green-600 hover:text-green-900 flex items-center inline-flex">
                                             <UserPlus size={14} className="mr-1"/> Assign
                                         </button>
@@ -179,7 +179,7 @@ const AdminComplaints = () => {
                                         >
                                             <option value="">-- Select an Officer --</option>
                                             {officers.map(off => (
-                                                <option key={off._id} value={off._id}>{off.name} - {off.policeStation}</option>
+                                                <option key={off.id} value={off.id}>{off.name} - {off.policeStation}</option>
                                             ))}
                                         </select>
                                     </div>
