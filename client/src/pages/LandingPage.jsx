@@ -68,19 +68,7 @@ const LandingPage = () => {
                             
                             {/* Fake Terminal Body */}
                             <div className="p-6 flex-1 flex flex-col justify-center space-y-4">
-                                <div className="bento-card p-4 animate-float">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <div className="flex items-center">
-                                            <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse mr-2"></div>
-                                            <span className="text-xs font-mono text-zinc-400">CRITICAL_ALERT</span>
-                                        </div>
-                                        <span className="text-xs text-zinc-600">Just now</span>
-                                    </div>
-                                    <p className="text-sm font-bold text-white">Suspect reported in Sector 7.</p>
-                                    <div className="w-full bg-zinc-800 h-1 mt-3 rounded-full overflow-hidden">
-                                        <div className="bg-primary-500 h-full w-[100%] shadow-[0_0_10px_rgba(0,255,204,0.8)]"></div>
-                                    </div>
-                                </div>
+
 
                                 <div className="bento-card p-4 border-primary-500/30 bg-primary-500/5 animate-float" style={{animationDelay: '1s'}}>
                                     <div className="flex items-center justify-between mb-2">
