@@ -110,13 +110,16 @@ const LandingPage = () => {
                         </div>
                         
                         {/* Standard Bento */}
-                        <div className="bento-card p-8 flex flex-col justify-end group">
-                            <div className="w-12 h-12 bg-zinc-800 rounded-2xl flex items-center justify-center mb-auto border border-zinc-700">
-                                <Shield className="text-accent-500" />
+                        <Link to="/ghost-mode" className="bento-card p-8 flex flex-col justify-end group hover:border-zinc-500 transition-all cursor-pointer relative overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            <div className="w-12 h-12 bg-zinc-800 rounded-2xl flex items-center justify-center mb-auto border border-zinc-700 relative z-10 group-hover:bg-zinc-700 transition-colors">
+                                <Shield className="text-zinc-400 group-hover:text-white transition-colors" />
                             </div>
-                            <h3 className="text-2xl font-bold text-white mb-2">Ghost Mode</h3>
-                            <p className="text-zinc-400">Total anonymity. Zero digital footprints left behind.</p>
-                        </div>
+                            <h3 className="text-2xl font-bold text-white mb-2 relative z-10 flex items-center">
+                                Ghost Mode <span className="ml-2 text-xs bg-zinc-800 px-2 py-1 rounded text-zinc-400 group-hover:bg-white group-hover:text-black transition-all">ACTIVATE</span>
+                            </h3>
+                            <p className="text-zinc-400 relative z-10">Total anonymity. Zero digital footprints left behind.</p>
+                        </Link>
 
                         {/* Standard Bento */}
                         <div className="bento-card p-8 flex flex-col justify-end group">

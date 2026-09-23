@@ -84,9 +84,6 @@ const Navbar = () => {
                             <button onClick={handleGlobalSOS} className="px-4 py-2 bg-red-600/20 text-red-500 border border-red-500/30 rounded-full text-sm font-bold shadow-[0_0_15px_rgba(220,38,38,0.3)] hover:bg-red-600 hover:text-white transition-all flex items-center animate-pulse mr-2">
                                 <AlertCircle size={16} className="mr-1" /> EMERGENCY SOS
                             </button>
-                            <Link to="/ghost-mode" className="px-4 py-2 bg-zinc-800/80 text-zinc-300 border border-zinc-700/50 rounded-full text-sm font-bold shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:bg-white hover:text-black transition-all flex items-center mr-2">
-                                <EyeOff size={16} className="mr-1" /> GHOST MODE
-                            </Link>
                             {!user && (
                                 <>
                                     <Link to="/bulletins" className="px-4 py-2 rounded-full text-sm font-semibold text-zinc-300 hover:text-white hover:bg-zinc-800 transition-all flex items-center group">
