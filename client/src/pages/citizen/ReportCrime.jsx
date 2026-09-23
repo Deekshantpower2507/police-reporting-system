@@ -25,6 +25,10 @@ const ReportCrime = () => {
     const [suspectInfo, setSuspectInfo] = useState({ name: '', description: '', contactInformation: '', relationship: '', aiSketchUrl: '' });
     const [evidence, setEvidence] = useState([]);
     const [generatingSketch, setGeneratingSketch] = useState(false);
+    
+    // Legal & Oath
+    const [oathAccepted, setOathAccepted] = useState(false);
+    const [digitalSignature, setDigitalSignature] = useState('');
 
     // AI CyberCop States
     const [aiChatOpen, setAiChatOpen] = useState(false);
@@ -368,6 +372,48 @@ const ReportCrime = () => {
                                     <option value="Critical">CRITICAL (Immediate danger)</option>
                                 </select>
                             </div>
+
+                            <div className="mt-8 pt-6 border-t border-red-500/30">
+                                <h3 className="text-red-500 font-bold uppercase tracking-widest mb-4 flex items-center">
+                                    <AlertCircle size={18} className="mr-2" /> Legal Declaration & E-Signature
+                                </h3>
+                                
+                                <div className="bg-red-500/10 border border-red-500/20 p-5 rounded-xl mb-6">
+                                    <label className="flex items-start cursor-pointer group">
+                                        <div className="relative flex items-center justify-center mt-1">
+                                            <input 
+                                                type="checkbox" 
+                                                checked={oathAccepted} 
+                                                onChange={(e) => setOathAccepted(e.target.checked)}
+                                                className="peer appearance-none w-5 h-5 border-2 border-red-500/50 rounded bg-black checked:bg-red-500 checked:border-red-500 transition-colors"
+                                            />
+                                            <CheckCircle size={14} className="absolute text-black opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" />
+                                        </div>
+                                        <div className="ml-4 flex-1">
+                                            <p className="text-sm text-red-200 font-bold leading-relaxed">
+                                                I solemnly affirm that the information provided in this FIR is true and accurate to the best of my knowledge.
+                                            </p>
+                                            <p className="text-xs text-red-400/80 mt-2 font-mono">
+                                                * WARNING: Under Section 182 of the Indian Penal Code (IPC), providing false information to a public servant with intent to cause them to use their lawful power to the injury of another person is a punishable offense, liable for imprisonment and/or fines.
+                                            </p>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-mono text-zinc-500 uppercase tracking-widest mb-2">Digital Signature <span className="text-primary-500">*</span></label>
+                                    <input 
+                                        type="text" 
+                                        value={digitalSignature} 
+                                        onChange={(e) => setDigitalSignature(e.target.value)} 
+                                        placeholder="Type your full legal name to digitally sign" 
+                                        className={`${inputClasses} font-signature text-xl italic text-primary-500 focus:border-red-500 focus:ring-red-500`}
+                                    />
+                                    <p className="text-[10px] text-zinc-500 font-mono mt-2 flex items-center">
+                                        <CheckCircle size={10} className="mr-1 text-green-500" /> By signing, this document becomes legally binding.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     )}
 
@@ -383,7 +429,11 @@ const ReportCrime = () => {
                                 PROCEED <ChevronRight size={16} className="ml-2" />
                             </button>
                         ) : (
-                            <button type="submit" disabled={loading} className="px-8 py-4 bg-red-500 text-black rounded-xl font-black uppercase tracking-widest shadow-[0_0_20px_rgba(239,68,68,0.4)] hover:shadow-[0_0_30px_rgba(239,68,68,0.6)] transition-all flex items-center text-sm transform hover:-translate-y-1 disabled:opacity-50">
+                            <button 
+                                type="submit" 
+                                disabled={loading || !oathAccepted || digitalSignature.trim() === ''} 
+                                className="px-8 py-4 bg-red-500 text-black rounded-xl font-black uppercase tracking-widest shadow-[0_0_20px_rgba(239,68,68,0.4)] hover:shadow-[0_0_30px_rgba(239,68,68,0.6)] transition-all flex items-center text-sm transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                            >
                                 {loading ? 'UPLOADING...' : 'TRANSMIT REPORT'} <Zap size={16} className="ml-2" />
                             </button>
                         )}
