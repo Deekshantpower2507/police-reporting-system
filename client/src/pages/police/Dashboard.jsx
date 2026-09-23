@@ -50,8 +50,28 @@ const PoliceDashboard = () => {
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Officer Dashboard</h1>
-            <p className="text-gray-600 mb-8">Welcome back, {user?.name} ({user?.officerId})</p>
+            <div className="flex justify-between items-start mb-2">
+                <div>
+                    <h1 className="text-3xl font-bold text-gray-900">Officer Dashboard</h1>
+                    <p className="text-gray-600 mb-8">Welcome back, {user?.name} ({user?.officerId})</p>
+                </div>
+                
+                {/* Dynamic Threat Level Defcon System */}
+                <div className={`px-6 py-2 rounded-full border-2 font-black tracking-widest uppercase flex items-center shadow-lg transition-all animate-pulse ${
+                    stats.new >= 3 
+                        ? 'bg-red-100 border-red-500 text-red-700 shadow-red-500/20' 
+                        : stats.investigating >= 3 
+                            ? 'bg-yellow-100 border-yellow-500 text-yellow-700 shadow-yellow-500/20'
+                            : 'bg-green-100 border-green-500 text-green-700 shadow-green-500/20'
+                }`}>
+                    <AlertCircle size={20} className="mr-2" />
+                    THREAT LEVEL: {
+                        stats.new >= 3 ? 'DEFCON 2 (CRITICAL)' 
+                        : stats.investigating >= 3 ? 'DEFCON 3 (ELEVATED)'
+                        : 'DEFCON 5 (NORMAL)'
+                    }
+                </div>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
