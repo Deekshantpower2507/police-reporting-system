@@ -20,6 +20,7 @@ import PoliceInvestigation from './pages/police/Investigation';
 import Bulletins from './pages/shared/Bulletins';
 import SafetyMap from './pages/shared/SafetyMap';
 import ManageBulletins from './pages/admin/ManageBulletins';
+import GhostMode from './pages/shared/GhostMode';
 
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminComplaints from './pages/admin/Complaints';
@@ -43,6 +44,7 @@ function App() {
               <Route path="/bulletins" element={<Bulletins />} />
               <Route path="/safety-map" element={<SafetyMap />} />
               <Route path="/track" element={<TrackComplaint />} />
+              <Route path="/ghost-mode" element={<GhostMode />} />
 
               {/* Citizen Routes */}
               <Route path="/citizen/dashboard" element={
