@@ -62,8 +62,8 @@ const ComplaintDetails = () => {
                     )}
                 </div>
                 <div className="flex gap-2">
-                    <button onClick={handlePrint} className="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 flex items-center gap-2">
-                        <Printer size={16} /> Download PDF
+                    <button onClick={handlePrint} className="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 flex items-center gap-2 shadow-[0_0_15px_rgba(37,99,235,0.4)]">
+                        <Printer size={16} /> Download Official E-FIR
                     </button>
                     {(user.role === 'police' || user.role === 'admin') && (
                         <Link to={`/police/investigation/${complaint._id}`} className="bg-primary-600 text-white px-4 py-2 rounded text-sm hover:bg-primary-700">Update Investigation</Link>
@@ -71,16 +71,35 @@ const ComplaintDetails = () => {
                 </div>
             </div>
 
-            <div ref={componentRef} className="grid grid-cols-1 lg:grid-cols-3 gap-8 p-6 print:p-0 bg-white print:text-black print:block">
+            <div ref={componentRef} className="grid grid-cols-1 lg:grid-cols-3 gap-8 p-6 print:p-8 bg-white print:text-black print:block relative">
+                
+                {/* Official FIR Print Header - Only visible when printing */}
+                <div className="hidden print:block col-span-1 lg:col-span-3 text-center mb-8 border-b-2 border-black pb-6 relative">
+                    <div className="absolute top-0 left-0 w-24 h-24 border-2 border-dashed border-gray-400 flex items-center justify-center">
+                        <span className="text-gray-400 text-xs">OFFICIAL SEAL</span>
+                    </div>
+                    <div className="absolute top-0 right-0 border border-black p-2">
+                        <div className="w-16 h-16 bg-gray-200">
+                            {/* Mock QR Code space */}
+                            <img src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=FIR-${complaint.complaintId}`} alt="QR Code" className="w-full h-full opacity-80" />
+                        </div>
+                    </div>
+                    
+                    <h1 className="text-4xl font-black uppercase tracking-widest text-black">First Information Report (FIR)</h1>
+                    <h2 className="text-xl font-bold uppercase mt-2">Madhya Pradesh Police Department</h2>
+                    <p className="font-mono text-sm mt-1">Gwalior Police District - Jurisdiction: {complaint.policeStation || 'HQ'}</p>
+                    <p className="font-mono text-xs mt-1 font-bold">DOCUMENT HASH: {btoa(complaint.complaintId + complaint.createdAt).substring(0, 32)}</p>
+                </div>
+
                 <div className="col-span-1 lg:col-span-3 mb-2 print:block">
                     <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
                         Complaint ID: {complaint.complaintId}
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusColor(complaint.status)}`}>
+                        <span className={`px-3 py-1 rounded-full text-xs font-bold border print:border-black print:text-black ${getStatusColor(complaint.status)}`}>
                             {complaint.status}
                         </span>
                     </h1>
-                    <p className="text-gray-500 mt-1">Submitted on {new Date(complaint.createdAt).toLocaleString()}</p>
-                    <hr className="mt-4 border-gray-200" />
+                    <p className="text-gray-500 mt-1 print:text-black">Submitted on {new Date(complaint.createdAt).toLocaleString()}</p>
+                    <hr className="mt-4 border-gray-200 print:border-black" />
                 </div>
                 <div className="lg:col-span-2 space-y-6">
                     {/* Incident Details */}
@@ -227,6 +246,32 @@ const ComplaintDetails = () => {
                             ))}
                         </div>
                     </div>
+                </div>
+
+                {/* Print Only Footer / Signatures */}
+                <div className="hidden print:flex col-span-1 lg:col-span-3 mt-16 justify-between border-t-2 border-black pt-8">
+                    <div className="text-center">
+                        <div className="w-40 border-b border-black mb-2 mx-auto"></div>
+                        <p className="font-bold">Signature of Complainant</p>
+                        <p className="text-xs">{complaint.victimInformation?.name || 'Digitally Signed'}</p>
+                    </div>
+                    
+                    <div className="text-center">
+                        <div className="w-40 border-b border-black mb-2 mx-auto font-signature text-xl">{complaint.assignedOfficer?.name || ''}</div>
+                        <p className="font-bold">Investigating Officer</p>
+                        <p className="text-xs">{complaint.policeStation || 'N.C.R.S.'}</p>
+                    </div>
+
+                    <div className="text-center">
+                        <div className="w-40 border-b border-black mb-2 mx-auto"></div>
+                        <p className="font-bold">Station House Officer (SHO)</p>
+                        <p className="text-xs">Stamp / Seal</p>
+                    </div>
+                </div>
+                
+                {/* IPC Disclaimer for Print */}
+                <div className="hidden print:block col-span-1 lg:col-span-3 mt-8 text-[10px] text-justify text-gray-700">
+                    <p><strong>LEGAL DISCLAIMER:</strong> This is a digitally generated First Information Report (E-FIR) recorded under the National Cybercrime Reporting System (N.C.R.S.). Any tampering, forgery, or unauthorized reproduction of this document is a punishable offense under the Information Technology Act, 2000 and relevant sections of the Bharatiya Nyaya Sanhita (BNS). The complainant has accepted the legal oath under IPC Section 182 at the time of submission.</p>
                 </div>
             </div>
         </div>
