@@ -62,27 +62,36 @@ const LandingPage = () => {
                                     <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
                                 </div>
                                 <div className="mx-auto flex items-center text-xs text-zinc-500 font-mono">
-                                    <Terminal size={12} className="mr-2" /> secure_feed.exe
+                                    <Terminal size={12} className="mr-2" /> cyber_law_gk.exe
                                 </div>
                             </div>
                             
                             {/* Fake Terminal Body */}
                             <div className="p-6 flex-1 flex flex-col justify-center space-y-4">
-
-
-                                <div className="bento-card p-4 border-primary-500/30 bg-primary-500/5 animate-float" style={{animationDelay: '1s'}}>
+                                <div className="bento-card p-4 border-primary-500/30 bg-primary-500/5 animate-float">
                                     <div className="flex items-center justify-between mb-2">
                                         <div className="flex items-center">
-                                            <div className="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
-                                            <span className="text-xs font-mono text-zinc-400">STATUS_UPDATE</span>
+                                            <div className="w-2 h-2 rounded-full bg-primary-500 mr-2 animate-pulse"></div>
+                                            <span className="text-xs font-mono text-zinc-400">LAW_DATABASE</span>
                                         </div>
-                                        <span className="text-xs text-zinc-600">2m ago</span>
                                     </div>
-                                    <p className="text-sm font-bold text-white">Case #0042 Resolved.</p>
-                                    <div className="mt-2 flex space-x-1">
-                                        <span className="px-2 py-1 bg-green-500/20 text-green-400 text-[10px] rounded uppercase font-bold">Closed</span>
-                                        <span className="px-2 py-1 bg-zinc-800 text-zinc-400 text-[10px] rounded uppercase font-bold">Verified</span>
+                                    <p className="text-sm font-bold text-white mb-1">Section 66C: Identity Theft</p>
+                                    <p className="text-xs text-zinc-400">Whoever, fraudulently makes use of the electronic signature, password or any other unique identification feature of any other person, shall be punished with imprisonment up to 3 years.</p>
+                                    <div className="mt-3 flex space-x-2">
+                                        <span className="px-2 py-1 bg-primary-500/20 text-primary-400 text-[10px] rounded uppercase font-bold border border-primary-500/30">IT Act 2000</span>
+                                        <span className="px-2 py-1 bg-zinc-800 text-zinc-400 text-[10px] rounded uppercase font-bold">Cybercrime</span>
                                     </div>
+                                </div>
+
+                                <div className="bento-card p-4 border-accent-500/30 bg-accent-500/5 animate-float" style={{animationDelay: '1s'}}>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <div className="flex items-center">
+                                            <div className="w-2 h-2 rounded-full bg-accent-500 mr-2"></div>
+                                            <span className="text-xs font-mono text-zinc-400">DID_YOU_KNOW?</span>
+                                        </div>
+                                    </div>
+                                    <p className="text-sm font-bold text-white mb-1">Section 67: Obscene Content</p>
+                                    <p className="text-xs text-zinc-400">Publishing or transmitting obscene material in electronic form can lead to 5 years imprisonment and a fine of ₹10 Lakhs on second conviction.</p>
                                 </div>
                             </div>
                         </div>
