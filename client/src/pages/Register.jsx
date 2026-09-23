@@ -10,10 +10,21 @@ const Register = () => {
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showOtp, setShowOtp] = useState(false);
+    const [otp, setOtp] = useState(['', '', '', '', '', '']);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleOtpChange = (element, index) => {
+        if (isNaN(element.value)) return false;
+        setOtp([...otp.map((d, idx) => (idx === index ? element.value : d))]);
+        // Focus next input
+        if (element.nextSibling && element.value) {
+            element.nextSibling.focus();
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -24,12 +35,28 @@ const Register = () => {
             return setError('PASSWORDS_MISMATCH');
         }
 
+        if (!showOtp) {
+            setLoading(true);
+            // Simulate sending OTP
+            setTimeout(() => {
+                setLoading(false);
+                setShowOtp(true);
+            }, 1000);
+            return;
+        }
+
+        const otpString = otp.join('');
+        if (otpString.length !== 6) {
+            return setError('INVALID_OTP_FORMAT');
+        }
+
         setLoading(true);
         try {
             await axios.post('/api/auth/register', formData);
             navigate('/login');
         } catch (err) {
             setError(err.response?.data?.message || 'REGISTRATION_FAILED');
+            setShowOtp(false);
         } finally {
             setLoading(false);
         }
@@ -78,74 +105,114 @@ const Register = () => {
                     )}
 
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {/* Personal Info */}
-                            <div className="space-y-4">
-                                <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest border-b border-zinc-800 pb-2">Identity</h3>
+                        {!showOtp ? (
+                            <>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {/* Personal Info */}
+                                    <div className="space-y-4">
+                                        <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest border-b border-zinc-800 pb-2">Identity</h3>
+                                        
+                                        <div className="relative group">
+                                            <div className={iconWrapperClasses}><User className={iconClasses} /></div>
+                                            <input type="text" name="name" required value={formData.name} onChange={handleChange} className={inputClasses} placeholder="FULL_NAME" />
+                                        </div>
+                                        
+                                        <div className="relative group">
+                                            <div className={iconWrapperClasses}><Mail className={iconClasses} /></div>
+                                            <input type="email" name="email" required value={formData.email} onChange={handleChange} className={inputClasses} placeholder="EMAIL_ADDRESS" />
+                                        </div>
+
+                                        <div className="relative group">
+                                            <div className={iconWrapperClasses}><Phone className={iconClasses} /></div>
+                                            <input type="tel" name="phone" required value={formData.phone} onChange={handleChange} className={inputClasses} placeholder="MOBILE_NUM" />
+                                        </div>
+
+                                        <div className="relative group">
+                                            <div className={iconWrapperClasses}><Lock className={iconClasses} /></div>
+                                            <input type="password" name="password" required minLength="6" value={formData.password} onChange={handleChange} className={inputClasses} placeholder="PASSWORD" />
+                                        </div>
+
+                                        <div className="relative group">
+                                            <div className={iconWrapperClasses}><Lock className={iconClasses} /></div>
+                                            <input type="password" name="confirmPassword" required minLength="6" value={formData.confirmPassword} onChange={handleChange} className={inputClasses} placeholder="CONFIRM_PASS" />
+                                        </div>
+                                    </div>
+
+                                    {/* Address Info */}
+                                    <div className="space-y-4">
+                                        <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest border-b border-zinc-800 pb-2">Location Data</h3>
+                                        
+                                        <div className="relative group">
+                                            <div className={iconWrapperClasses}><MapPin className={iconClasses} /></div>
+                                            <input type="text" name="address" required value={formData.address} onChange={handleChange} className={inputClasses} placeholder="STREET_ADDRESS" />
+                                        </div>
+
+                                        <div className="relative group">
+                                            <div className={iconWrapperClasses}><Building className={iconClasses} /></div>
+                                            <input type="text" name="city" required value={formData.city} onChange={handleChange} className={inputClasses} placeholder="CITY" />
+                                        </div>
+
+                                        <div className="relative group">
+                                            <div className={iconWrapperClasses}><MapPin className={iconClasses} /></div>
+                                            <input type="text" name="state" required value={formData.state} onChange={handleChange} className={inputClasses} placeholder="STATE" />
+                                        </div>
+
+                                        <div className="relative group">
+                                            <div className={iconWrapperClasses}><Hash className={iconClasses} /></div>
+                                            <input type="text" name="pincode" required value={formData.pincode} onChange={handleChange} className={inputClasses} placeholder="ZIP_CODE" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="pt-6 mt-6 border-t border-zinc-800">
+                                    <button
+                                        type="submit"
+                                        disabled={loading}
+                                        className="group w-full py-4 bg-primary-500 hover:bg-primary-400 text-black font-black uppercase tracking-widest rounded-xl transition-all shadow-[0_0_20px_rgba(0,255,204,0.3)] hover:shadow-[0_0_30px_rgba(0,255,204,0.5)] disabled:opacity-50 flex items-center justify-center"
+                                    >
+                                        {loading ? 'PROCESSING...' : (
+                                            <>REGISTER <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" /></>
+                                        )}
+                                    </button>
+                                </div>
+                            </>
+                        ) : (
+                            <div className="space-y-8 py-8 animate-fadeIn text-center">
+                                <div className="mx-auto w-16 h-16 bg-primary-500/20 rounded-full flex items-center justify-center mb-4">
+                                    <Lock className="text-primary-500 h-8 w-8" />
+                                </div>
+                                <h3 className="text-2xl font-black text-white uppercase tracking-wider">VERIFY IDENTITY</h3>
+                                <p className="text-zinc-400 font-mono text-sm">Enter the 6-digit verification code sent to <br/><span className="text-primary-500 font-bold">{formData.phone || '+91 XXXXXXXX'}</span></p>
                                 
-                                <div className="relative group">
-                                    <div className={iconWrapperClasses}><User className={iconClasses} /></div>
-                                    <input type="text" name="name" required value={formData.name} onChange={handleChange} className={inputClasses} placeholder="FULL_NAME" />
+                                <div className="flex justify-center space-x-3 my-8">
+                                    {otp.map((data, index) => (
+                                        <input
+                                            key={index}
+                                            type="text"
+                                            maxLength="1"
+                                            value={data}
+                                            onChange={(e) => handleOtpChange(e.target, index)}
+                                            onFocus={(e) => e.target.select()}
+                                            className="w-12 h-14 bg-zinc-900 border border-zinc-700 rounded-lg text-center text-white text-xl font-bold focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all font-mono"
+                                        />
+                                    ))}
                                 </div>
+
+                                <button
+                                    type="submit"
+                                    disabled={loading || otp.join('').length !== 6}
+                                    className="group w-full py-4 bg-primary-500 hover:bg-primary-400 text-black font-black uppercase tracking-widest rounded-xl transition-all shadow-[0_0_20px_rgba(0,255,204,0.3)] hover:shadow-[0_0_30px_rgba(0,255,204,0.5)] disabled:opacity-50 flex items-center justify-center"
+                                >
+                                    {loading ? 'VERIFYING...' : (
+                                        <>VERIFY & COMPLETE <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" /></>
+                                    )}
+                                </button>
                                 
-                                <div className="relative group">
-                                    <div className={iconWrapperClasses}><Mail className={iconClasses} /></div>
-                                    <input type="email" name="email" required value={formData.email} onChange={handleChange} className={inputClasses} placeholder="EMAIL_ADDRESS" />
-                                </div>
-
-                                <div className="relative group">
-                                    <div className={iconWrapperClasses}><Phone className={iconClasses} /></div>
-                                    <input type="tel" name="phone" required value={formData.phone} onChange={handleChange} className={inputClasses} placeholder="MOBILE_NUM" />
-                                </div>
-
-                                <div className="relative group">
-                                    <div className={iconWrapperClasses}><Lock className={iconClasses} /></div>
-                                    <input type="password" name="password" required minLength="6" value={formData.password} onChange={handleChange} className={inputClasses} placeholder="PASSWORD" />
-                                </div>
-
-                                <div className="relative group">
-                                    <div className={iconWrapperClasses}><Lock className={iconClasses} /></div>
-                                    <input type="password" name="confirmPassword" required minLength="6" value={formData.confirmPassword} onChange={handleChange} className={inputClasses} placeholder="CONFIRM_PASS" />
-                                </div>
+                                <button type="button" onClick={() => setShowOtp(false)} className="mt-4 text-xs font-mono text-zinc-500 hover:text-white uppercase">
+                                    ← BACK TO EDIT DETAILS
+                                </button>
                             </div>
-
-                            {/* Address Info */}
-                            <div className="space-y-4">
-                                <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest border-b border-zinc-800 pb-2">Location Data</h3>
-                                
-                                <div className="relative group">
-                                    <div className={iconWrapperClasses}><MapPin className={iconClasses} /></div>
-                                    <input type="text" name="address" required value={formData.address} onChange={handleChange} className={inputClasses} placeholder="STREET_ADDRESS" />
-                                </div>
-
-                                <div className="relative group">
-                                    <div className={iconWrapperClasses}><Building className={iconClasses} /></div>
-                                    <input type="text" name="city" required value={formData.city} onChange={handleChange} className={inputClasses} placeholder="CITY" />
-                                </div>
-
-                                <div className="relative group">
-                                    <div className={iconWrapperClasses}><MapPin className={iconClasses} /></div>
-                                    <input type="text" name="state" required value={formData.state} onChange={handleChange} className={inputClasses} placeholder="STATE" />
-                                </div>
-
-                                <div className="relative group">
-                                    <div className={iconWrapperClasses}><Hash className={iconClasses} /></div>
-                                    <input type="text" name="pincode" required value={formData.pincode} onChange={handleChange} className={inputClasses} placeholder="ZIP_CODE" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="pt-6 mt-6 border-t border-zinc-800">
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="group w-full py-4 bg-primary-500 hover:bg-primary-400 text-black font-black uppercase tracking-widest rounded-xl transition-all shadow-[0_0_20px_rgba(0,255,204,0.3)] hover:shadow-[0_0_30px_rgba(0,255,204,0.5)] disabled:opacity-50 flex items-center justify-center"
-                            >
-                                {loading ? 'PROCESSING...' : (
-                                    <>REGISTER <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" /></>
-                                )}
-                            </button>
-                        </div>
+                        )}
                     </form>
 
                     <div className="text-center mt-6">
