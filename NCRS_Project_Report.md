@@ -32,6 +32,18 @@ Integrated a mock OSINT (Open Source Intelligence) Dark Web Scanner UI on the da
 #### F. AI Suspect Face Generator
 Integrated Pollinations API on the incident report form. Based on physical descriptions provided by victims, the system auto-generates a realistic, pencil-style composite sketch of the suspect.
 
+#### G. Dynamic "Threat Level" (DEFCON System)
+Added a real-time, pulsing Threat Level banner to both the Admin and Police Dashboards. The system calculates a threat tier (DEFCON 5 NORMAL, DEFCON 3 ELEVATED, DEFCON 2 CRITICAL) automatically based on the volume of new, unresolved, and active cases in the SQLite database.
+
+#### H. Official E-FIR PDF Auto-Generator
+Converted the standard complaint details page into a printable Official Document. By injecting specialized CSS `print` media queries, users can download a formally structured E-FIR complete with Madhya Pradesh Police header logos, legal footers, and simulated cryptographic verification hashes.
+
+#### I. IPC Legal Oath & Digital Signatures
+Enhanced the final submission step of the E-FIR. Citizens are now legally bound to accept the IPC Section 182 disclaimer (against false reporting) and must provide a digital text-based signature before the system allows the FIR to be transmitted.
+
+#### J. Interactive Mock OTP Verification
+Integrated a mock Two-Factor Authentication (OTP) layer during user registration. Citizens must input a 6-digit verification code to complete their account creation, simulating real-world identity verification protocols.
+
 ### 3. Core System Fixes
 - **Database Architecture:** Migrated the backend successfully to SQLite for seamless local execution and resolved critical primary key `_id` vs `id` assignment bugs during the Admin officer assignment process.
 - **Routing:** Corrected Vercel SPA routing configurations (`vercel.json`) to prevent 404 errors during cloud deployments.
