@@ -64,8 +64,8 @@ const Navbar = () => {
     return (
         <div className="fixed w-full z-50 px-4 sm:px-6 top-6 flex justify-center pointer-events-none">
             <nav className={`pointer-events-auto transition-all duration-300 w-full max-w-7xl rounded-full border ${scrolled ? 'glass-dark border-zinc-700/50 shadow-2xl py-3' : 'glass border-transparent py-4'}`}>
-                <div className="px-6 flex justify-between items-center">
-                    <div className="flex items-center">
+                <div className="px-6 flex items-center justify-between md:justify-start">
+                    <div className="flex items-center md:w-1/4">
                         <Link to="/" className="flex items-center group">
                             <div className="p-2 bg-primary-500 rounded-full mr-3 shadow-[0_0_15px_rgba(0,255,204,0.5)] group-hover:shadow-[0_0_25px_rgba(0,255,204,0.8)] transition-all">
                                 <Shield className="h-5 w-5 text-black" />
@@ -77,13 +77,33 @@ const Navbar = () => {
                     </div>
 
                     {/* Desktop Menu - Expanded with functional options */}
-                    <div className="hidden md:flex items-center space-x-1 lg:space-x-3">
-                        <button onClick={handleGlobalSOS} className="px-4 py-2 bg-red-600/20 text-red-500 border border-red-500/30 rounded-full text-sm font-bold shadow-[0_0_15px_rgba(220,38,38,0.3)] hover:bg-red-600 hover:text-white transition-all flex items-center animate-pulse mr-2">
-                            <AlertCircle size={16} className="mr-1" /> SOS
-                        </button>
+                    <div className="hidden md:flex flex-1 items-center justify-end md:justify-between space-x-1 lg:space-x-3 pl-8">
                         
-                        {user ? (
-                            <>
+                        {/* Center/Left aligned quick actions */}
+                        <div className="flex items-center space-x-2 flex-1">
+                            <button onClick={handleGlobalSOS} className="px-4 py-2 bg-red-600/20 text-red-500 border border-red-500/30 rounded-full text-sm font-bold shadow-[0_0_15px_rgba(220,38,38,0.3)] hover:bg-red-600 hover:text-white transition-all flex items-center animate-pulse mr-2">
+                                <AlertCircle size={16} className="mr-1" /> EMERGENCY SOS
+                            </button>
+                            
+                            {!user && (
+                                <>
+                                    <Link to="/bulletins" className="px-4 py-2 rounded-full text-sm font-semibold text-zinc-300 hover:text-white hover:bg-zinc-800 transition-all flex items-center group">
+                                        <AlertCircle size={16} className="mr-2 text-primary-500 group-hover:animate-pulse" /> Police Bulletins
+                                    </Link>
+                                    <Link to="/safety-map" className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${isActive('/safety-map') ? 'bg-zinc-800 text-white' : 'text-zinc-300 hover:text-white hover:bg-zinc-800'}`}>
+                                        Live Safety Map
+                                    </Link>
+                                    <Link to="/track" className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${isActive('/track') ? 'bg-zinc-800 text-white' : 'text-zinc-300 hover:text-white hover:bg-zinc-800'}`}>
+                                        Track FIR Status
+                                    </Link>
+                                </>
+                            )}
+                        </div>
+
+                        {/* Right aligned user actions */}
+                        <div className="flex items-center justify-end space-x-2">
+                            {user ? (
+                                <>
                                 <Link to={getDashboardLink()} className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${isActive(getDashboardLink()) ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800/50'}`}>
                                     Dash
                                 </Link>
@@ -115,23 +135,15 @@ const Navbar = () => {
                             </>
                         ) : (
                             <>
-                                <Link to="/bulletins" className="px-4 py-2 rounded-full text-sm font-semibold text-zinc-300 hover:text-white hover:bg-zinc-800 transition-all flex items-center group">
-                                    <AlertCircle size={16} className="mr-2 text-primary-500 group-hover:animate-pulse" /> Bulletins
-                                </Link>
-                                <Link to="/safety-map" className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${isActive('/safety-map') ? 'bg-zinc-800 text-white' : 'text-zinc-300 hover:text-white hover:bg-zinc-800'}`}>
-                                    Safety Map
-                                </Link>
-                                <Link to="/track" className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${isActive('/track') ? 'bg-zinc-800 text-white' : 'text-zinc-300 hover:text-white hover:bg-zinc-800'}`}>
-                                    Track FIR
-                                </Link>
                                 <Link to="/login" className="px-4 py-2 rounded-full text-sm font-semibold text-zinc-300 hover:text-white hover:bg-zinc-800 transition-all ml-2 border-l border-zinc-700 pl-4 rounded-l-none">
-                                    Login
+                                    Citizen Login
                                 </Link>
                                 <Link to="/register" className="ml-2 px-6 py-2 bg-primary-500 text-black rounded-full text-sm font-bold shadow-[0_0_15px_rgba(0,255,204,0.3)] hover:shadow-[0_0_20px_rgba(0,255,204,0.6)] hover:-translate-y-0.5 transition-all">
                                     File E-FIR (Sign Up)
                                 </Link>
                             </>
                         )}
+                        </div>
                     </div>
 
                     {/* Mobile Menu Button */}
