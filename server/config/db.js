@@ -1,9 +1,10 @@
 const { Sequelize } = require('sequelize');
+const path = require('path');
 require('dotenv').config();
 
 const sequelize = new Sequelize({
     dialect: 'sqlite',
-    storage: './database.sqlite', // This will create a file named database.sqlite in the server root
+    storage: path.join(__dirname, '../database.sqlite'),
     logging: false, // Set to true to see SQL queries
 });
 

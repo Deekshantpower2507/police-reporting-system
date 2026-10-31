@@ -7,7 +7,8 @@ const protect = async (req, res, next) => {
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         try {
             token = req.headers.authorization.split(' ')[1];
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            const secret = process.env.JWT_SECRET || 'supersecret_crime_reporting_key_2026';
+            const decoded = jwt.verify(token, secret);
             
             req.user = await User.findByPk(decoded.id, { attributes: { exclude: ['password'] } });
             if (!req.user) {
